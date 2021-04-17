@@ -28,8 +28,13 @@ def get_db():
     finally:
         db.close()
 
-
-class Query(ObjectType):
+####################Query and mutation resolvers################
+class UsersQuery(ObjectType):
+	"""
+	to get all the user details in the database.
+	result:
+	returns dict of users
+	"""
 	user_list = None
 	get_users = List(Account)
 	async def resolve_get_users(self, info):
@@ -38,6 +43,11 @@ class Query(ObjectType):
 
 
 class EmailQuery(ObjectType):
+	"""
+	to get all the email of all users in the database.
+	result:
+	returns dict of emails
+	"""
 	user_list = None
 	get_emails = List(Emails)
 	async def resolve_get_emails(self, info):
@@ -48,6 +58,12 @@ class EmailQuery(ObjectType):
 
 
 class UserId(ObjectType):
+	"""
+	input:
+	id: the user_id
+	result:
+	returns the details of the given user_id
+	"""
 	user_detail = None
 	get_data = Field(Account,id=Int())
 	async def resolve_get_data(self, info, id):
@@ -58,18 +74,10 @@ class UserId(ObjectType):
 				return user
 		return None
 
-# class Query(ObjectType):
-#   course_list = None
-#   get_course = List(CourseType)
-#   async def resolve_get_course(self, info):
-#     with open("./courses.json") as courses:
-#       course_list = json.load(courses)
-#     return course_list
 
-
-
+#####################Rotues###########################
 app.add_route("/", GraphQLApp(
-  schema=Schema(query=Query),
+  schema=Schema(query=UsersQuery),
   executor_class=AsyncioExecutor)
 )
 
