@@ -17,10 +17,19 @@ Things you will get in this repo:
 
 
 routes:
-1. getting data
-2. filtering data
-3. inserting_data
+1. getting data - Done
+2. filtering data - Done
+3. inserting_data - Done
 4. deleting data
 5. getting nested data
 6. search using graphene
 7. upload files
+
+
+
+resources:
+for graphql datatypes or scalars:
+https://docs.graphene-python.org/en/latest/types/scalars/
+
+reference link:
+https://blog.logrocket.com/building-a-graphql-server-with-fastapi/

@@ -1,4 +1,4 @@
- from graphene import String, ObjectType
+from graphene import String, ObjectType
 
 from typing import List, Optional#, EmailStr
 
@@ -9,6 +9,10 @@ class Account(ObjectType):
 	name = String(required=True)
 	password = String(required=True)
 	email = String()
+
+
+class UserIdentifier(ObjectType):
+	id = String(required=True)
 
 
 class Emails(ObjectType):

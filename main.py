@@ -6,7 +6,7 @@ from graphene import ObjectType, List, String, Schema, Field, Int, Mutation
 
 from graphql.execution.executors.asyncio import AsyncioExecutor
 from starlette.graphql import GraphQLApp
-from schemas import Account, CourseType, Emails
+from schemas import Account, CourseType, Emails, UserIdentifier
 
 
 #from typing import List
@@ -119,6 +119,42 @@ class CreateUser(Mutation):
 class UserMutation(ObjectType):
 	create_user = CreateUser.Field()
 
+
+
+
+
+"""
+mutation structure that returns email if the 
+insertion is successful
+mutation {
+  createUser(
+    email:"r@gmailcom"
+    name:"ravi"
+    password:"password"
+  ) {
+    newUser {
+      id
+      name
+      email
+      password
+    }
+  }
+}
+"""
+class CreateAccount(Mutation):
+	new_user_id = Field(Emails)
+	class Arguments:
+		name= String(required=True)
+		email=String(required=True)
+		password = String(required=True)
+
+	async def mutate(self, info, name, email, password):
+		detail = crud.create_user(name, email, password)
+		return CreateAccount(detail)
+
+class NewAccMutation(ObjectType):
+	create_account = CreateAccount.Field()
+
 #####################Rotues###########################
 app.add_route("/", GraphQLApp(
   schema=Schema(query=UsersQuery),
@@ -136,11 +172,19 @@ app.add_route("/user", GraphQLApp(
   executor_class=AsyncioExecutor)
 )
 
-
+#returns entire inserted data when insertion is successful
 app.add_route("/new_user", GraphQLApp(
   schema=Schema(query=UsersQuery, mutation=UserMutation),
   executor_class=AsyncioExecutor)
 )
+
+
+#returns email id when insertion is successful
+app.add_route("/new_account", GraphQLApp(
+  schema=Schema(query=EmailQuery, mutation=NewAccMutation),
+  executor_class=AsyncioExecutor)
+)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=5000)
