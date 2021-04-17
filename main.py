@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 
-from graphene import ObjectType, List, String, Schema, Field, Int
+from graphene import ObjectType, List, String, Schema, Field, Int, Mutation
 
 
 from graphql.execution.executors.asyncio import AsyncioExecutor
@@ -56,6 +56,16 @@ class EmailQuery(ObjectType):
 		return app_users
 
 
+"""
+query{
+  getData(id: 6) {
+    id
+    name
+    email
+    password
+  }
+}
+"""
 
 class UserId(ObjectType):
 	"""
@@ -75,6 +85,40 @@ class UserId(ObjectType):
 		return None
 
 
+"""
+mutation structure that returns all the data if the 
+insertion is successful
+mutation {
+  createUser(
+    email:"r@gmailcom"
+    name:"ravi"
+    password:"password"
+  ) {
+    newUser {
+      id
+      name
+      email
+      password
+    }
+  }
+}
+"""
+class CreateUser(Mutation):
+	new_user = Field(Account)
+
+	class Arguments:
+		#id: String(required=True)
+		name= String(required=True)
+		email=String(required=True)
+		password = String(required=True)
+
+	async def mutate(self, info, name, email, password):
+		detail = crud.create_user(name, email, password)
+		return CreateUser(detail)
+
+class UserMutation(ObjectType):
+	create_user = CreateUser.Field()
+
 #####################Rotues###########################
 app.add_route("/", GraphQLApp(
   schema=Schema(query=UsersQuery),
@@ -93,25 +137,10 @@ app.add_route("/user", GraphQLApp(
 )
 
 
-# @app.post("/new_user")#, response_model=schemas.Users)
-# async def create_user(user: schemas.NewUser, db: Session = Depends(get_db)):
-#     temp = user.__dict__
-#     print(temp)
-#     db_user = crud.get_user_by_email(db, email=user.email)
-#     if db_user:
-#         raise HTTPException(status_code=400, detail="Email already registered")
-    
-#     insert_status = crud.create_user(db=db, user=user)
-#     print(insert_status)
-#     return insert_status
-
-
-
-# @app.get("/users")#, response_model=List[schemas.Users])
-# async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     users = crud.get_users(db, skip=skip, limit=limit)
-#     return users
-
+app.add_route("/new_user", GraphQLApp(
+  schema=Schema(query=UsersQuery, mutation=UserMutation),
+  executor_class=AsyncioExecutor)
+)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=5000)

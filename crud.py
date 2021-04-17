@@ -35,12 +35,13 @@ def get_users( skip: int = 0, limit: int = 100):
 	return temp_data
 
 
-def create_user(db: Session, user: schemas.NewUser):
-    secret_password = user.password + "notreallyhashed"
-    db_user = models.Users(name=user.name, email=user.email, password=secret_password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+def create_user(name, email, password):
+    with SessionLocal() as db:
+        secret_password = password + "notreallyhashed"
+        db_user = models.Users(name=name, email=email, password=password)
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
     return db_user
 
 
