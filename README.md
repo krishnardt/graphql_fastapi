@@ -34,6 +34,20 @@ https://docs.graphene-python.org/en/latest/types/scalars/
 reference link:
 https://blog.logrocket.com/building-a-graphql-server-with-fastapi/
 
+installing postgres:
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04
+
+for postgres search:
+https://www.compose.com/articles/mastering-postgresql-tools-full-text-search-and-phrase-search/
+
+https://thoughtbot.com/blog/optimizing-full-text-search-with-postgres-tsvector-columns-and-triggers
+
+https://stackoverflow.com/questions/59746062/is-there-any-reason-to-include-a-tsvector-column-in-a-postgres-table-rather-th
+
+https://stackoverflow.com/questions/59673046/postgres-full-text-search-indexing-across-multiple-columns?rq=1
+
+https://linuxhint.com/postgresql-full-text-search-tutorial/
+
 
 mutation explanation
 
