@@ -1,12 +1,13 @@
 from fastapi import FastAPI
+import ast
 
-
-from graphene import ObjectType, List, String, Schema, Field, Int, Mutation
+from graphene import ObjectType, List, String, Schema, Field, Int, Mutation, Boolean, ClientIDMutation
+from graphene_file_upload.scalars import Upload
 
 
 from graphql.execution.executors.asyncio import AsyncioExecutor
 from starlette.graphql import GraphQLApp
-from schemas import Account, CourseType, Emails, UserIdentifier
+from schemas import Account, CourseType, Emails, UserIdentifier, UploadResponse
 
 
 #from typing import List
@@ -15,6 +16,7 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 import crud, models, schemas
 import uvicorn
+from shutil import copyfile
 from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -120,7 +122,65 @@ class UserMutation(ObjectType):
 	create_user = CreateUser.Field()
 
 
+# class BooleanQuery(graphene.ObjectType):
+#     ok = graphene.Boolean(default_value=True)
 
+
+class UploadMutation(Mutation):
+	class Arguments:
+		file_in=Upload(required=True)
+
+	success = Boolean()
+
+	def mutate(self, info, file_in):
+		print(info)
+		files = info.context
+		print(files)
+		#for file in files.keys():
+			#print(ast.literal_eval(files[file]))
+		print(files['request'].__dict__['_body'])
+		#shutil.copyfile(original, target)
+
+		return UploadMutation(success=True)
+
+
+'''
+mutation {
+  uploadFile(
+    filedata :"/home/spyder/Downloads/KrishnaMohanInjeti_3_years_SE_experience_resume_1.pdf"
+  ) {
+    success
+  }
+}
+'''
+class UploadFileMtrs(Mutation):
+
+	class Arguments:
+	    filedata = Upload()
+
+	filedata = Upload
+	success = Boolean()
+
+
+	def mutate(self, info,  filedata=None):
+	    print(filedata.value)
+	    # with open(filedata.value, 'rb') as f:
+	    # 	print(f.read())
+
+	    #date_file = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+	    #date = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+	    #dateplus = date + ".txt"
+	    #fs = FileSystemStorage()
+	    #fs.save(dateplus,filedata[0])
+	    dest = "filename"#r'/home/spyder/KrishnaMohanInjeti_3_years_SE_experience_resume_1.pdf'
+	    copyfile(r'{}'.format(filedata.value), dest)
+	    return UploadFileMtrs(success=True)
+
+
+
+
+class FileUploadMutation(ObjectType):
+	upload_file = UploadFileMtrs.Field()
 
 
 """
@@ -150,10 +210,13 @@ class CreateAccount(Mutation):
 
 	async def mutate(self, info, name, email, password):
 		detail = crud.create_user(name, email, password)
+
 		return CreateAccount(detail)
 
 class NewAccMutation(ObjectType):
 	create_account = CreateAccount.Field()
+
+
 
 #####################Rotues###########################
 app.add_route("/", GraphQLApp(
@@ -182,6 +245,12 @@ app.add_route("/new_user", GraphQLApp(
 #returns email id when insertion is successful
 app.add_route("/new_account", GraphQLApp(
   schema=Schema(query=EmailQuery, mutation=NewAccMutation),
+  executor_class=AsyncioExecutor)
+)
+
+
+app.add_route("/upload", GraphQLApp(
+  schema=Schema(query=UploadResponse ,mutation=FileUploadMutation),
   executor_class=AsyncioExecutor)
 )
 

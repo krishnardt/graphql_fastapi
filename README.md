@@ -21,9 +21,8 @@ routes:
 2. filtering data - Done
 3. inserting_data - Done
 4. deleting data
-5. getting nested data
-6. search using graphene
-7. upload files
+5. search using graphene
+6. upload files -  Done --> single file upload
 
 
 
@@ -47,6 +46,8 @@ https://stackoverflow.com/questions/59746062/is-there-any-reason-to-include-a-ts
 https://stackoverflow.com/questions/59673046/postgres-full-text-search-indexing-across-multiple-columns?rq=1
 
 https://linuxhint.com/postgresql-full-text-search-tutorial/
+
+
 
 
 mutation explanation

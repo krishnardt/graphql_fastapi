@@ -1,4 +1,4 @@
-from graphene import String, ObjectType
+from graphene import String, ObjectType, Boolean
 
 from typing import List, Optional#, EmailStr
 
@@ -21,6 +21,8 @@ class Emails(ObjectType):
 	# password = String(required=True)
 	email = String()
 
+class UploadResponse(ObjectType):
+	result = Boolean()
 
 class CourseType(ObjectType):
   id = String(required=True)
