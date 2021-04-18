@@ -45,5 +45,18 @@ def create_user(name, email, password):
     return db_user
 
 
+def delete_user(name):
+    with SessionLocal() as db:
+        try:
+            db_user = db.query(models.Users).filter(models.Users.name == name).delete()
+            db.commit()
+            #db.refresh(db_user)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+
+
 
 

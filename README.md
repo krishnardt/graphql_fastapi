@@ -20,7 +20,7 @@ routes:
 1. getting data - Done
 2. filtering data - Done
 3. inserting_data - Done
-4. deleting data
+4. deleting data - Done
 5. search using graphene
 6. upload files -  Done --> single file upload
 

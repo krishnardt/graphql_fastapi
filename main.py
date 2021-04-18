@@ -218,6 +218,19 @@ class NewAccMutation(ObjectType):
 
 
 
+class DeleteAccount(Mutation):
+	success = Field(UploadResponse)
+	class Arguments:
+		name=String(required=True)
+
+	async def mutate(self, info, name):
+		detail = crud.delete_user(name)
+		print(detail)
+		return DeleteAccount(success=UploadResponse(result=detail))
+
+class DeleteAccMutation(ObjectType):
+	delete_account = DeleteAccount.Field()
+
 #####################Rotues###########################
 app.add_route("/", GraphQLApp(
   schema=Schema(query=UsersQuery),
@@ -251,6 +264,11 @@ app.add_route("/new_account", GraphQLApp(
 
 app.add_route("/upload", GraphQLApp(
   schema=Schema(query=UploadResponse ,mutation=FileUploadMutation),
+  executor_class=AsyncioExecutor)
+)
+
+app.add_route("/remove", GraphQLApp(
+  schema=Schema(query=UploadResponse ,mutation=DeleteAccMutation),
   executor_class=AsyncioExecutor)
 )
 
