@@ -7,7 +7,7 @@ from graphene_file_upload.scalars import Upload
 
 from graphql.execution.executors.asyncio import AsyncioExecutor
 from starlette.graphql import GraphQLApp
-from schemas import Account, CourseType, Emails, UserIdentifier, UploadResponse
+from schemas import Account, Emails, UserIdentifier, UploadResponse
 
 
 #from typing import List
