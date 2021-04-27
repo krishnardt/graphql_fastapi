@@ -172,7 +172,7 @@ class UploadFileMtrs(Mutation):
 	    #dateplus = date + ".txt"
 	    #fs = FileSystemStorage()
 	    #fs.save(dateplus,filedata[0])
-	    dest = "filename"#r'/home/spyder/KrishnaMohanInjeti_3_years_SE_experience_resume_1.pdf'
+	    dest = "filename"
 	    copyfile(r'{}'.format(filedata.value), dest)
 	    return UploadFileMtrs(success=True)
 
