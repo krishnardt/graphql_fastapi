@@ -153,35 +153,81 @@ mutation {
   }
 }
 '''
-class UploadFileMtrs(Mutation):
+
+
+class UploadFileSingle(Mutation):
 
 	class Arguments:
 	    filedata = Upload()
 
-	filedata = Upload
+	filedata = List(Upload)
 	success = Boolean()
 
 
 	def mutate(self, info,  filedata=None):
-	    print(filedata.value)
-	    # with open(filedata.value, 'rb') as f:
-	    # 	print(f.read())
+		print(type(filedata))
+		print(filedata.value)
+		# with open(filedata.value, 'rb') as f:
+		# 	print(f.read())
 
-	    #date_file = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-	    #date = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-	    #dateplus = date + ".txt"
-	    #fs = FileSystemStorage()
-	    #fs.save(dateplus,filedata[0])
-	    dest = "filename"
-	    copyfile(r'{}'.format(filedata.value), dest)
-	    return UploadFileMtrs(success=True)
+		#date_file = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		#date = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+		#dateplus = date + ".txt"
+		#fs = FileSystemStorage()
+		#fs.save(dateplus,filedata[0])
+		#dest = "filename"#r'/home/spyder/KrishnaMohanInjeti_3_years_SE_experience_resume_1.pdf'
+		#copyfile(r'{}'.format(filedata.value), dest)
+		return UploadFileSingle(success=True)
+
+
+'''
+mutation {
+  uploadFiles(
+    filedata :[
+      "/home/spyder/Downloads/KrishnaMohanInjeti_3_years_SE_experience_resume_1.pdf",
+      "/home/spyder/Downloads/fastapi_3059.py"
+    ]
+      
+  ) {
+    success
+  }
+}
+'''
+class UploadFileMultiple(Mutation):
+
+	class Arguments:
+	    filedata = Upload()
+
+	filedata = List(Upload)
+	success = Boolean()
+
+
+	def mutate(self, info,  filedata=None):
+		print(type(filedata))
+		print(filedata)
+		files_list = filedata.values
+		for files in files_list:
+			print(files.value)
+		# with open(filedata.value, 'rb') as f:
+		# 	print(f.read())
+
+		#date_file = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		#date = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+		#dateplus = date + ".txt"
+		#fs = FileSystemStorage()
+		#fs.save(dateplus,filedata[0])
+		#dest = "filename"#r'/home/spyder/KrishnaMohanInjeti_3_years_SE_experience_resume_1.pdf'
+		#copyfile(r'{}'.format(filedata.value), dest)
+		return UploadFileMultiple(success=True)
 
 
 
+class SingleFileUploadMutation(ObjectType):
+	upload_file = UploadFileSingle.Field()
 
-class FileUploadMutation(ObjectType):
-	upload_file = UploadFileMtrs.Field()
 
+class MultipleFileUploadMutation(ObjectType):
+	upload_files = UploadFileMultiple.Field()
 
 """
 mutation structure that returns email if the 
@@ -262,8 +308,15 @@ app.add_route("/new_account", GraphQLApp(
 )
 
 
+#for single file upload
 app.add_route("/upload", GraphQLApp(
-  schema=Schema(query=UploadResponse ,mutation=FileUploadMutation),
+  schema=Schema(query=UploadResponse ,mutation=SingleFileUploadMutation),
+  executor_class=AsyncioExecutor)
+)
+
+#for multiple files upload
+app.add_route("/uploads", GraphQLApp(
+  schema=Schema(query=UploadResponse ,mutation=MultipleFileUploadMutation),
   executor_class=AsyncioExecutor)
 )
 
