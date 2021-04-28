@@ -122,28 +122,6 @@ class UserMutation(ObjectType):
 	create_user = CreateUser.Field()
 
 
-# class BooleanQuery(graphene.ObjectType):
-#     ok = graphene.Boolean(default_value=True)
-
-
-class UploadMutation(Mutation):
-	class Arguments:
-		file_in=Upload(required=True)
-
-	success = Boolean()
-
-	def mutate(self, info, file_in):
-		print(info)
-		files = info.context
-		print(files)
-		#for file in files.keys():
-			#print(ast.literal_eval(files[file]))
-		print(files['request'].__dict__['_body'])
-		#shutil.copyfile(original, target)
-
-		return UploadMutation(success=True)
-
-
 '''
 mutation {
   uploadFile(
@@ -153,8 +131,6 @@ mutation {
   }
 }
 '''
-
-
 class UploadFileSingle(Mutation):
 
 	class Arguments:
@@ -327,4 +303,4 @@ app.add_route("/remove", GraphQLApp(
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=5000)
+    uvicorn.run("main:app", host="127.0.0.1", port=5000, reload=True)
